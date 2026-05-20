@@ -40,6 +40,16 @@ const CHIP_COLORS = [
   "#56A8C5",
   "#90C63F",
 ];
+const BACKGROUND_IMAGES = [
+  "/b1.jpg",
+  "/b2.jpg",
+  "/b3.jpg",
+  "/b4.jpg",
+  "/b5.jpg",
+  "/b6.jpg",
+  "/b7.jpg",
+  "/b8.jpg",
+];
 
 function isCompletedToday(habit: Habit) {
   const today = format(new Date(), "yyyy-MM-dd");
@@ -60,6 +70,7 @@ export default function Home() {
   const toggleLog = useHabitStore((state) => state.toggleLog);
 
   const [pageMode, setPageMode] = useState<PageMode>("habits");
+  const [backgroundIndex, setBackgroundIndex] = useState(0);
   const [theme, setTheme] = useState<"light" | "dark">(() => {
     if (typeof window === "undefined") return "light";
     const saved = localStorage.getItem("habit-theme");
@@ -113,6 +124,13 @@ export default function Home() {
   useEffect(() => {
     localStorage.setItem("habit-theme", theme);
   }, [theme]);
+
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      setBackgroundIndex((prev) => (prev + 1) % BACKGROUND_IMAGES.length);
+    }, 3000);
+    return () => window.clearInterval(id);
+  }, []);
 
   const completedToday = useMemo(
     () => habits.filter((habit) => isCompletedToday(habit)).length,
@@ -280,7 +298,16 @@ export default function Home() {
         } as CSSProperties);
 
   return (
-    <div style={themeVars} className="h-screen overflow-y-auto overflow-x-hidden bg-[var(--bg)] text-[var(--text)]">
+    <div
+      style={{
+        ...themeVars,
+        backgroundImage: `linear-gradient(to bottom, rgb(var(--overlay) / 0.25), rgb(var(--overlay) / 0.3)), url(${BACKGROUND_IMAGES[backgroundIndex]})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed",
+      }}
+      className="h-screen overflow-y-auto overflow-x-hidden bg-[var(--bg)] text-[var(--text)] transition-all duration-700"
+    >
       <div className="origin-top scale-[0.72] md:scale-[0.66]">
         <header className="bg-transparent">
           <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-4 md:px-6">
