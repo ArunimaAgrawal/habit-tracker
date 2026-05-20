@@ -16,23 +16,25 @@ import {
   Plus,
   RotateCcw,
   Search,
+  Sun,
   Target,
   Timer,
   TimerReset,
   Trash2,
   X,
+  Moon,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { type CSSProperties, useEffect, useMemo, useState } from "react";
 
 type FilterMode = "all" | "active" | "completed";
 type PageMode = "habits" | "timer";
 type TimerMode = "stopwatch" | "countdown";
 
 const CHIP_COLORS = [
-  "#6D5D6E",
+  "var(--muted)",
   "#4E7DD9",
-  "#4F4557",
-  "#4F4557",
+  "var(--primary)",
+  "var(--primary)",
   "#7D5BDE",
   "#CF5198",
   "#56A8C5",
@@ -58,6 +60,12 @@ export default function Home() {
   const toggleLog = useHabitStore((state) => state.toggleLog);
 
   const [pageMode, setPageMode] = useState<PageMode>("habits");
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    if (typeof window === "undefined") return "light";
+    const saved = localStorage.getItem("habit-theme");
+    if (saved === "light" || saved === "dark") return saved;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingHabitId, setEditingHabitId] = useState<string | null>(null);
@@ -101,6 +109,10 @@ export default function Home() {
     }, 1000);
     return () => window.clearInterval(id);
   }, [isCountdownRunning]);
+
+  useEffect(() => {
+    localStorage.setItem("habit-theme", theme);
+  }, [theme]);
 
   const completedToday = useMemo(
     () => habits.filter((habit) => isCompletedToday(habit)).length,
@@ -240,8 +252,35 @@ export default function Home() {
     applyCountdownInputs();
   };
 
+  const themeVars =
+    theme === "dark"
+      ? ({
+          "--bg": "#393646",
+          "--surface": "#4F4557",
+          "--text": "#F4EEE0",
+          "--primary": "#F4EEE0",
+          "--muted": "#C8BCC9",
+          "--field": "#5A4F5C",
+          "--border-soft": "#6D5D6E",
+          "--done-bg": "#5A4F5C",
+          "--timer-text": "#F4EEE0",
+          "--overlay": "0 0 0",
+        } as CSSProperties)
+      : ({
+          "--bg": "#F4EEE0",
+          "--surface": "#F4EEE0",
+          "--text": "#393646",
+          "--primary": "#4F4557",
+          "--muted": "#6D5D6E",
+          "--field": "#F4EEE0",
+          "--border-soft": "#D2DAE8",
+          "--done-bg": "#FFF8F8",
+          "--timer-text": "#6D5D6E",
+          "--overlay": "28 41 66",
+        } as CSSProperties);
+
   return (
-    <div className="h-screen overflow-y-auto overflow-x-hidden bg-[#F4EEE0] text-[#393646]">
+    <div style={themeVars} className="h-screen overflow-y-auto overflow-x-hidden bg-[var(--bg)] text-[var(--text)]">
       <div className="origin-top scale-[0.72] md:scale-[0.66]">
         <header className="bg-transparent">
           <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-4 md:px-6">
@@ -255,17 +294,25 @@ export default function Home() {
               />
               <div>
                 <p className="text-3xl leading-none font-semibold tracking-tight md:text-4xl">Habitual</p>
-                <p className="text-sm text-[#6D5D6E] md:text-base">Track. Focus. Grow.</p>
+                <p className="text-sm text-[var(--muted)] md:text-base">Track. Focus. Grow.</p>
               </div>
             </div>
 
-            <nav className="hidden rounded-3xl border border-[#6D5D6E] bg-[#F4EEE0] p-2 md:flex">
+            <div className="hidden items-center gap-2 md:flex">
+              <button
+                onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+                className="rounded-xl border border-[var(--muted)] bg-[var(--surface)] p-2 text-[var(--text)]"
+                aria-label="Toggle theme"
+              >
+                {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+              </button>
+            <nav className="rounded-3xl border border-[var(--muted)] bg-[var(--bg)] p-2 md:flex">
               <button
                 onClick={() => setPageMode("habits")}
                 className={`flex items-center gap-3 rounded-2xl px-5 py-2.5 text-xl font-semibold ${
                   pageMode === "habits"
-                    ? "bg-white text-[#393646] shadow-sm"
-                    : "text-[#6D5D6E]"
+                    ? "bg-[var(--surface)] text-[var(--text)] shadow-sm"
+                    : "text-[var(--muted)]"
                 }`}
               >
                 <Target className="h-4 w-4" /> Habits
@@ -274,13 +321,14 @@ export default function Home() {
                 onClick={() => setPageMode("timer")}
                 className={`flex items-center gap-3 rounded-2xl px-5 py-2.5 text-xl font-semibold ${
                   pageMode === "timer"
-                    ? "bg-white text-[#393646] shadow-sm"
-                    : "text-[#6D5D6E]"
+                    ? "bg-[var(--surface)] text-[var(--text)] shadow-sm"
+                    : "text-[var(--muted)]"
                 }`}
               >
                 <Clock3 className="h-4 w-4" /> Timer
               </button>
             </nav>
+            </div>
           </div>
         </header>
 
@@ -289,35 +337,37 @@ export default function Home() {
             <section className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
               <div>
                 <h1 className="text-2xl font-semibold tracking-tight md:text-4xl">My Habits</h1>
-                <p className="mt-2 text-sm text-[#6D5D6E] md:text-2xl">
+                <p className="mt-2 text-sm text-[var(--muted)] md:text-2xl">
                   {completedToday} of {habits.length} completed today
                 </p>
               </div>
               <button
                 onClick={openCreateModal}
-                className="inline-flex items-center justify-center gap-2.5 rounded-3xl bg-[#393646] px-6 py-2.5 text-lg font-semibold text-white shadow-lg md:min-w-48 md:text-2xl"
+                className={`inline-flex items-center justify-center gap-2.5 rounded-3xl bg-[var(--text)] px-6 py-2.5 text-lg font-semibold shadow-lg md:min-w-48 md:text-2xl ${
+                  theme === "dark" ? "text-[#393646]" : "text-[#F4EEE0]"
+                }`}
               >
                 <Plus className="h-5 w-5" /> Add Habit
               </button>
             </section>
 
-            <div className="mt-6 h-3 w-full overflow-hidden rounded-full bg-[#6D5D6E]">
-              <div className="h-full rounded-full bg-[#6D5D6E] transition-all" style={{ width: `${progress}%` }} />
+            <div className="mt-6 h-3 w-full overflow-hidden rounded-full bg-[var(--muted)]">
+              <div className="h-full rounded-full bg-[var(--muted)] transition-all" style={{ width: `${progress}%` }} />
             </div>
 
             <section className="mt-6 flex flex-col gap-3 md:flex-row">
-              <div className="flex flex-1 items-center gap-3 rounded-3xl border border-[#6D5D6E] bg-white px-4 py-2.5">
-                <Search className="h-5 w-5 text-[#6D5D6E]" />
+              <div className="flex flex-1 items-center gap-3 rounded-3xl border border-[var(--muted)] bg-[var(--surface)] px-4 py-2.5">
+                <Search className="h-5 w-5 text-[var(--muted)]" />
                 <input
                   value={searchText}
                   onChange={(e) => setSearchText(e.target.value)}
                   placeholder="Search habits..."
-                  className="w-full bg-transparent text-base text-[#4F4557] outline-none placeholder:text-[#6D5D6E] md:text-2xl"
+                  className="w-full bg-transparent text-base text-[var(--primary)] outline-none placeholder:text-[var(--muted)] md:text-2xl"
                 />
               </div>
 
-              <div className="flex items-center gap-2 rounded-3xl border border-[#6D5D6E] bg-white p-2">
-                <div className="grid h-10 w-10 place-items-center text-[#6D5D6E] md:h-12 md:w-12">
+              <div className="flex items-center gap-2 rounded-3xl border border-[var(--muted)] bg-[var(--surface)] p-2">
+                <div className="grid h-10 w-10 place-items-center text-[var(--muted)] md:h-12 md:w-12">
                   <Filter className="h-4 w-4" />
                 </div>
                 {(["all", "active", "completed"] as FilterMode[]).map((mode) => (
@@ -326,8 +376,8 @@ export default function Home() {
                     onClick={() => setFilterMode(mode)}
                     className={`rounded-2xl px-4 py-2 text-sm font-semibold capitalize md:text-xl ${
                       filterMode === mode
-                        ? "bg-[#F4EEE0] text-[#393646] shadow-sm"
-                        : "text-[#6D5D6E]"
+                        ? "bg-[var(--bg)] text-[var(--text)] shadow-sm"
+                        : "text-[var(--muted)]"
                     }`}
                   >
                     {mode}
@@ -338,7 +388,7 @@ export default function Home() {
 
             <section className="mt-5 max-h-[52vh] space-y-3 overflow-y-auto pr-1">
               {visibleHabits.length === 0 ? (
-                <div className="rounded-3xl border border-[#6D5D6E] bg-white p-10 text-center text-xl text-[#6D5D6E]">
+                <div className="rounded-3xl border border-[var(--muted)] bg-[var(--surface)] p-10 text-center text-xl text-[var(--muted)]">
                   No habits found. Create one to get started.
                 </div>
               ) : (
@@ -349,8 +399,8 @@ export default function Home() {
                   return (
                     <article
                       key={habit.id}
-                      className={`rounded-3xl border-[3px] bg-white p-4 shadow-sm transition-all md:p-5 ${
-                        done ? "border-[#4F4557]/90 bg-[#FFF8F8]" : "border-[#D2DAE8]"
+                      className={`rounded-3xl border-[3px] bg-[var(--surface)] p-4 shadow-sm transition-all md:p-5 ${
+                        done ? "border-[var(--primary)]/90 bg-[var(--done-bg)]" : "border-[var(--border-soft)]"
                       }`}
                     >
                       <div className="flex items-start justify-between gap-4">
@@ -359,8 +409,8 @@ export default function Home() {
                             onClick={() => toggleLog(habit.id, format(new Date(), "yyyy-MM-dd"))}
                             className={`grid h-10 w-10 place-items-center rounded-full border-[3px] md:h-12 md:w-12 ${
                               done
-                                ? "border-[#4F4557] bg-[#4F4557] text-white"
-                                : "border-[#6D5D6E] text-transparent"
+                                ? "border-[var(--primary)] bg-[var(--primary)] text-white"
+                                : "border-[var(--muted)] text-transparent"
                             }`}
                             aria-label="Toggle completed"
                           >
@@ -374,7 +424,7 @@ export default function Home() {
                               ) : null}
                               <h3
                                 className={`text-xl font-semibold md:text-3xl ${
-                                  done ? "text-[#4F4557] line-through" : "text-[#393646]"
+                                  done ? "text-[var(--primary)] line-through" : "text-[var(--text)]"
                                 }`}
                               >
                                 {habit.name}
@@ -382,16 +432,16 @@ export default function Home() {
                             </div>
 
                             {habit.description ? (
-                              <p className="mt-1.5 text-xs text-[#6D5D6E] md:text-lg">{habit.description}</p>
+                              <p className="mt-1.5 text-xs text-[var(--muted)] md:text-lg">{habit.description}</p>
                             ) : null}
 
-                            <div className="mt-3 inline-flex items-center gap-2 rounded-2xl bg-[#F4EEE0] px-3 py-1.5 text-xs font-semibold text-[#6D5D6E] md:text-base">
+                            <div className="mt-3 inline-flex items-center gap-2 rounded-2xl bg-[var(--bg)] px-3 py-1.5 text-xs font-semibold text-[var(--muted)] md:text-base">
                               <Calendar className="h-4 w-4" /> {reminderText}
                             </div>
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-3 text-[#6D5D6E]">
+                        <div className="flex items-center gap-3 text-[var(--muted)]">
                           <button onClick={() => openEditModal(habit)} className="p-1" aria-label="Edit habit">
                             <Pencil className="h-5 w-5" />
                           </button>
@@ -408,14 +458,14 @@ export default function Home() {
           </main>
         ) : (
           <main className="mx-auto w-full max-w-5xl px-4 py-8 md:px-6 md:py-10">
-            <section className="rounded-[2rem] border border-[#6D5D6E] bg-white p-5 shadow-sm md:p-7">
+            <section className="rounded-[2rem] border border-[var(--muted)] bg-[var(--surface)] p-5 shadow-sm md:p-7">
               <div className="flex gap-2">
                 <button
                   onClick={() => setTimerMode("stopwatch")}
                   className={`inline-flex items-center gap-2 rounded-2xl px-5 py-2.5 text-lg font-semibold ${
                     timerMode === "stopwatch"
-                      ? "bg-[#393646] text-white shadow-md"
-                      : "bg-[#F4EEE0] text-[#6D5D6E]"
+                      ? "bg-[var(--text)] text-[var(--bg)] shadow-md"
+                      : "bg-[var(--surface)] text-[var(--text)] border border-[var(--muted)]"
                   }`}
                 >
                   <Timer className="h-4 w-4" /> Stopwatch
@@ -424,8 +474,8 @@ export default function Home() {
                   onClick={() => setTimerMode("countdown")}
                   className={`inline-flex items-center gap-2 rounded-2xl px-5 py-2.5 text-lg font-semibold ${
                     timerMode === "countdown"
-                      ? "bg-[#393646] text-white shadow-md"
-                      : "bg-[#F4EEE0] text-[#6D5D6E]"
+                      ? "bg-[var(--text)] text-[var(--bg)] shadow-md"
+                      : "bg-[var(--surface)] text-[var(--text)] border border-[var(--muted)]"
                   }`}
                 >
                   <TimerReset className="h-4 w-4" /> Countdown
@@ -434,7 +484,7 @@ export default function Home() {
 
               {timerMode === "countdown" ? (
                 <div className="mt-4 flex items-center gap-4 text-base">
-                  <label className="text-[#6D5D6E] font-medium">Min</label>
+                  <label className="text-[var(--muted)] font-medium">Min</label>
                   <input
                     type="number"
                     min={0}
@@ -442,9 +492,9 @@ export default function Home() {
                     value={countdownMinutesInput}
                     onChange={(e) => setCountdownMinutesInput(Number(e.target.value))}
                     disabled={isCountdownRunning}
-                    className="w-20 rounded-2xl border border-[#6D5D6E] bg-[#F7F9FC] px-3 py-2 text-center text-xl font-semibold text-[#4F4557] outline-none disabled:opacity-60"
+                    className="w-20 rounded-2xl border border-[var(--muted)] bg-[var(--field)] px-3 py-2 text-center text-xl font-semibold text-[var(--primary)] outline-none disabled:opacity-60"
                   />
-                  <label className="text-[#6D5D6E] font-medium">Sec</label>
+                  <label className="text-[var(--muted)] font-medium">Sec</label>
                   <input
                     type="number"
                     min={0}
@@ -452,19 +502,19 @@ export default function Home() {
                     value={countdownSecondsInput}
                     onChange={(e) => setCountdownSecondsInput(Number(e.target.value))}
                     disabled={isCountdownRunning}
-                    className="w-20 rounded-2xl border border-[#6D5D6E] bg-[#F7F9FC] px-3 py-2 text-center text-xl font-semibold text-[#4F4557] outline-none disabled:opacity-60"
+                    className="w-20 rounded-2xl border border-[var(--muted)] bg-[var(--field)] px-3 py-2 text-center text-xl font-semibold text-[var(--primary)] outline-none disabled:opacity-60"
                   />
                   <button
                     onClick={applyCountdownInputs}
                     disabled={isCountdownRunning}
-                    className="rounded-2xl border border-[#6D5D6E] px-5 py-2 text-xl font-semibold text-[#5D6B84] disabled:opacity-60"
+                    className="rounded-2xl border border-[var(--muted)] px-5 py-2 text-xl font-semibold text-[var(--primary)] disabled:opacity-60"
                   >
                     Apply
                   </button>
                 </div>
               ) : null}
 
-              <div className="mt-8 text-center text-7xl font-semibold tracking-tight text-[#90A0B8] md:text-8xl">
+              <div className="mt-8 text-center text-7xl font-semibold tracking-tight text-[var(--timer-text)] md:text-8xl">
                 {timerDisplay}
               </div>
 
@@ -472,7 +522,7 @@ export default function Home() {
                 <button
                   onClick={handleTimerStartPause}
                   className={`inline-flex min-w-40 items-center justify-center gap-2 rounded-2xl px-5 py-3 text-xl font-semibold text-white shadow-md ${
-                    isTimerRunning ? "bg-[#4F4557]" : "bg-[#6D5D6E]"
+                    isTimerRunning ? "bg-[var(--primary)]" : "bg-[var(--muted)]"
                   }`}
                 >
                   {isTimerRunning ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
@@ -480,7 +530,7 @@ export default function Home() {
                 </button>
                 <button
                   onClick={handleTimerReset}
-                  className="inline-flex min-w-32 items-center justify-center gap-2 rounded-2xl border border-[#6D5D6E] px-5 py-3 text-xl font-semibold text-[#4F4557]"
+                  className="inline-flex min-w-32 items-center justify-center gap-2 rounded-2xl border border-[var(--muted)] px-5 py-3 text-xl font-semibold text-[var(--primary)]"
                 >
                   <RotateCcw className="h-5 w-5" /> Reset
                 </button>
@@ -492,38 +542,38 @@ export default function Home() {
       </div>
       {isModalOpen ? (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[#1C2942]/35 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[rgb(var(--overlay)_/_0.35)] p-4 backdrop-blur-sm"
           onClick={closeModal}
         >
           <div
-            className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-[1.8rem] border border-[#6D5D6E] bg-white p-5 shadow-2xl md:p-6"
+            className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-[1.8rem] border border-[var(--muted)] bg-[var(--surface)] p-5 shadow-2xl md:p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-2xl font-semibold text-[#4F4557] md:text-3xl">
+              <h2 className="text-2xl font-semibold text-[var(--primary)] md:text-3xl">
                 {editingHabitId ? "Edit Habit" : "Create New Habit"}
               </h2>
               <button
                 onClick={closeModal}
                 aria-label="Close modal"
-                className="rounded-xl p-2 text-[#6D5D6E] hover:bg-[#F4EEE0]"
+                className="rounded-xl p-2 text-[var(--muted)] hover:bg-[var(--bg)]"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="mb-2 block text-lg font-semibold text-[#4F4557]">Habit Name</label>
+                <label className="mb-2 block text-lg font-semibold text-[var(--primary)]">Habit Name</label>
                 <input
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Morning meditation"
-                  className="h-14 w-full rounded-2xl border border-[#6D5D6E] bg-[#F4EEE0] px-4 text-lg text-[#4F4557] outline-none placeholder:text-[#6D5D6E]"
+                  className="h-14 w-full rounded-2xl border border-[var(--muted)] bg-[var(--bg)] px-4 text-lg text-[var(--primary)] outline-none placeholder:text-[var(--muted)]"
                 />
               </div>
 
               <div>
-                <label className="mb-2 block text-lg font-semibold text-[#4F4557]">
+                <label className="mb-2 block text-lg font-semibold text-[var(--primary)]">
                   Emoji (optional)
                 </label>
                 <input
@@ -531,18 +581,18 @@ export default function Home() {
                   onChange={(e) => setEmoji(e.target.value)}
                   placeholder="e.g. 🧘"
                   maxLength={2}
-                  className="h-14 w-full rounded-2xl border border-[#6D5D6E] bg-[#F4EEE0] px-4 text-lg text-[#4F4557] outline-none placeholder:text-[#6D5D6E]"
+                  className="h-14 w-full rounded-2xl border border-[var(--muted)] bg-[var(--bg)] px-4 text-lg text-[var(--primary)] outline-none placeholder:text-[var(--muted)]"
                 />
                 <div className="mt-3">
                   <button
                     type="button"
                     onClick={() => setIsEmojiPickerOpen((prev) => !prev)}
-                    className="rounded-xl border border-[#6D5D6E] bg-white px-4 py-2 text-sm font-semibold text-[#4F4557]"
+                    className="rounded-xl border border-[var(--muted)] bg-[var(--surface)] px-4 py-2 text-sm font-semibold text-[var(--primary)]"
                   >
                     {isEmojiPickerOpen ? "Close Emoji List" : "Open Emoji Dropdown"}
                   </button>
                   {isEmojiPickerOpen ? (
-                    <div className="mt-3 overflow-hidden rounded-3xl border border-[#6D5D6E] bg-white p-2">
+                    <div className="mt-3 overflow-hidden rounded-3xl border border-[var(--muted)] bg-[var(--surface)] p-2">
                       <EmojiPicker
                         width="100%"
                         height={380}
@@ -558,35 +608,35 @@ export default function Home() {
               </div>
 
               <div>
-                <label className="mb-2 block text-lg font-semibold text-[#4F4557]">Description</label>
+                <label className="mb-2 block text-lg font-semibold text-[var(--primary)]">Description</label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="What's this habit about?"
                   rows={4}
-                  className="w-full rounded-2xl border border-[#6D5D6E] bg-[#F4EEE0] px-4 py-3 text-lg text-[#4F4557] outline-none placeholder:text-[#6D5D6E]"
+                  className="w-full rounded-2xl border border-[var(--muted)] bg-[var(--bg)] px-4 py-3 text-lg text-[var(--primary)] outline-none placeholder:text-[var(--muted)]"
                 />
               </div>
 
               <div>
-                <label className="mb-2 block text-lg font-semibold text-[#4F4557]">Schedule</label>
+                <label className="mb-2 block text-lg font-semibold text-[var(--primary)]">Schedule</label>
                 <input
                   type="datetime-local"
                   value={scheduleAt}
                   onChange={(e) => setScheduleAt(e.target.value)}
-                  className="h-14 w-full rounded-2xl border border-[#6D5D6E] bg-[#F4EEE0] px-4 text-lg text-[#393646] outline-none"
+                  className="h-14 w-full rounded-2xl border border-[var(--muted)] bg-[var(--bg)] px-4 text-lg text-[var(--text)] outline-none"
                 />
               </div>
 
               <div>
-                <p className="mb-3 text-lg font-semibold text-[#4F4557]">Color</p>
+                <p className="mb-3 text-lg font-semibold text-[var(--primary)]">Color</p>
                 <div className="flex flex-wrap gap-3">
                   {CHIP_COLORS.map((color) => (
                     <button
                       key={color}
                       onClick={() => setSelectedColor(color)}
                       className={`h-12 w-12 rounded-2xl ${
-                        selectedColor === color ? "ring-4 ring-[#6D5D6E] ring-offset-2" : ""
+                        selectedColor === color ? "ring-4 ring-[var(--muted)] ring-offset-2" : ""
                       }`}
                       style={{ backgroundColor: color }}
                       aria-label={`Select ${color}`}
@@ -599,13 +649,13 @@ export default function Home() {
             <div className="mt-6 flex flex-col gap-3 md:flex-row md:justify-end">
               <button
                 onClick={closeModal}
-                className="rounded-2xl border border-[#6D5D6E] px-6 py-2.5 text-lg font-semibold text-[#6D5D6E]"
+                className="rounded-2xl border border-[var(--muted)] px-6 py-2.5 text-lg font-semibold text-[var(--muted)]"
               >
                 Cancel
               </button>
               <button
                 onClick={saveHabit}
-                className="inline-flex min-w-56 items-center justify-center gap-2 rounded-2xl bg-[#393646] px-7 py-2.5 text-lg font-semibold text-white"
+                className="inline-flex min-w-56 items-center justify-center gap-2 rounded-2xl bg-[var(--text)] px-7 py-2.5 text-lg font-semibold text-white"
               >
                 <Plus className="h-5 w-5" /> {editingHabitId ? "Save Changes" : "Create Habit"}
               </button>
