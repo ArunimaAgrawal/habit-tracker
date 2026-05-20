@@ -71,6 +71,11 @@ export default function Home() {
 
   const [pageMode, setPageMode] = useState<PageMode>("habits");
   const [backgroundIndex, setBackgroundIndex] = useState(0);
+  const [backgroundMode, setBackgroundMode] = useState<"auto" | "constant">(() => {
+    if (typeof window === "undefined") return "auto";
+    const saved = localStorage.getItem("habit-bg-mode");
+    return saved === "constant" ? "constant" : "auto";
+  });
   const [theme, setTheme] = useState<"light" | "dark">(() => {
     if (typeof window === "undefined") return "light";
     const saved = localStorage.getItem("habit-theme");
@@ -126,11 +131,16 @@ export default function Home() {
   }, [theme]);
 
   useEffect(() => {
+    if (backgroundMode !== "auto") return;
     const id = window.setInterval(() => {
       setBackgroundIndex((prev) => (prev + 1) % BACKGROUND_IMAGES.length);
     }, 3000);
     return () => window.clearInterval(id);
-  }, []);
+  }, [backgroundMode]);
+
+  useEffect(() => {
+    localStorage.setItem("habit-bg-mode", backgroundMode);
+  }, [backgroundMode]);
 
   const completedToday = useMemo(
     () => habits.filter((habit) => isCompletedToday(habit)).length,
@@ -301,7 +311,11 @@ export default function Home() {
     <div
       style={{
         ...themeVars,
-        backgroundImage: `linear-gradient(to bottom, rgb(var(--overlay) / 0.25), rgb(var(--overlay) / 0.3)), url(${BACKGROUND_IMAGES[backgroundIndex]})`,
+        backgroundImage:
+          backgroundMode === "auto"
+            ? `linear-gradient(to bottom, rgb(var(--overlay) / 0.25), rgb(var(--overlay) / 0.3)), url(${BACKGROUND_IMAGES[backgroundIndex]})`
+            : "none",
+        backgroundColor: "var(--bg)",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundAttachment: "fixed",
@@ -326,6 +340,14 @@ export default function Home() {
             </div>
 
             <div className="hidden items-center gap-2 md:flex">
+              <button
+                onClick={() =>
+                  setBackgroundMode((prev) => (prev === "auto" ? "constant" : "auto"))
+                }
+                className="rounded-xl border border-[var(--muted)] bg-[var(--surface)] px-3 py-2 text-xs font-semibold text-[var(--text)]"
+              >
+                BG: {backgroundMode === "auto" ? "Auto" : "Constant"}
+              </button>
               <button
                 onClick={() => setTheme(theme === "light" ? "dark" : "light")}
                 className="rounded-xl border border-[var(--muted)] bg-[var(--surface)] p-2 text-[var(--text)]"
