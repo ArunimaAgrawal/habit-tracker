@@ -19,6 +19,7 @@ import {
   Timer,
   TimerReset,
   Trash2,
+  X,
   Zap,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -240,7 +241,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#F3F5F9] text-[#1F2A44]">
+    <div className="h-screen overflow-y-auto overflow-x-hidden bg-[#F3F5F9] text-[#1F2A44]">
       <div className="origin-top scale-[0.72] md:scale-[0.66]">
         <header className="bg-transparent">
           <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-4 md:px-6">
@@ -331,7 +332,7 @@ export default function Home() {
               </div>
             </section>
 
-            <section className="mt-5 space-y-3">
+            <section className="mt-5 max-h-[52vh] space-y-3 overflow-y-auto pr-1">
               {visibleHabits.length === 0 ? (
                 <div className="rounded-3xl border border-[#D8DFEA] bg-white p-10 text-center text-xl text-[#8FA0B8]">
                   No habits found. Create one to get started.
@@ -486,25 +487,39 @@ export default function Home() {
 
       </div>
       {isModalOpen ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1C2942]/35 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-4xl rounded-[2.2rem] border border-[#DCE3EF] bg-white p-7 shadow-2xl md:p-8">
-            <h2 className="text-4xl font-semibold text-[#33435B] md:text-5xl">
-              {editingHabitId ? "Edit Habit" : "Create New Habit"}
-            </h2>
-
-            <div className="mt-6 space-y-5">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#1C2942]/35 p-4 backdrop-blur-sm"
+          onClick={closeModal}
+        >
+          <div
+            className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-[1.8rem] border border-[#DCE3EF] bg-white p-5 shadow-2xl md:p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-2xl font-semibold text-[#33435B] md:text-3xl">
+                {editingHabitId ? "Edit Habit" : "Create New Habit"}
+              </h2>
+              <button
+                onClick={closeModal}
+                aria-label="Close modal"
+                className="rounded-xl p-2 text-[#64748F] hover:bg-[#EEF2F7]"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="space-y-4">
               <div>
-                <label className="mb-2 block text-2xl font-semibold text-[#3A4860]">Habit Name</label>
+                <label className="mb-2 block text-lg font-semibold text-[#3A4860]">Habit Name</label>
                 <input
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Morning meditation"
-                  className="h-20 w-full rounded-[1.8rem] border border-[#BCC8DA] bg-[#F5F7FC] px-6 text-3xl text-[#35455E] outline-none placeholder:text-[#8D97AA]"
+                  className="h-14 w-full rounded-2xl border border-[#BCC8DA] bg-[#F5F7FC] px-4 text-lg text-[#35455E] outline-none placeholder:text-[#8D97AA]"
                 />
               </div>
 
               <div>
-                <label className="mb-2 block text-2xl font-semibold text-[#3A4860]">
+                <label className="mb-2 block text-lg font-semibold text-[#3A4860]">
                   Emoji (optional)
                 </label>
                 <input
@@ -512,13 +527,13 @@ export default function Home() {
                   onChange={(e) => setEmoji(e.target.value)}
                   placeholder="e.g. 🧘"
                   maxLength={2}
-                  className="h-20 w-full rounded-[1.8rem] border border-[#BCC8DA] bg-[#F5F7FC] px-6 text-3xl text-[#35455E] outline-none placeholder:text-[#8D97AA]"
+                  className="h-14 w-full rounded-2xl border border-[#BCC8DA] bg-[#F5F7FC] px-4 text-lg text-[#35455E] outline-none placeholder:text-[#8D97AA]"
                 />
                 <div className="mt-3">
                   <button
                     type="button"
                     onClick={() => setIsEmojiPickerOpen((prev) => !prev)}
-                    className="rounded-2xl border border-[#CAD4E2] bg-white px-5 py-2 text-xl font-semibold text-[#4B5A73]"
+                    className="rounded-xl border border-[#CAD4E2] bg-white px-4 py-2 text-sm font-semibold text-[#4B5A73]"
                   >
                     {isEmojiPickerOpen ? "Close Emoji List" : "Open Emoji Dropdown"}
                   </button>
@@ -539,35 +554,35 @@ export default function Home() {
               </div>
 
               <div>
-                <label className="mb-2 block text-2xl font-semibold text-[#3A4860]">Description</label>
+                <label className="mb-2 block text-lg font-semibold text-[#3A4860]">Description</label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="What's this habit about?"
                   rows={4}
-                  className="w-full rounded-[1.8rem] border border-[#BCC8DA] bg-[#F5F7FC] px-6 py-4 text-3xl text-[#35455E] outline-none placeholder:text-[#8D97AA]"
+                  className="w-full rounded-2xl border border-[#BCC8DA] bg-[#F5F7FC] px-4 py-3 text-lg text-[#35455E] outline-none placeholder:text-[#8D97AA]"
                 />
               </div>
 
               <div>
-                <label className="mb-2 block text-2xl font-semibold text-[#3A4860]">Schedule</label>
+                <label className="mb-2 block text-lg font-semibold text-[#3A4860]">Schedule</label>
                 <input
                   type="datetime-local"
                   value={scheduleAt}
                   onChange={(e) => setScheduleAt(e.target.value)}
-                  className="h-20 w-full rounded-[1.8rem] border border-[#BCC8DA] bg-[#F5F7FC] px-6 text-3xl text-[#1F2A44] outline-none"
+                  className="h-14 w-full rounded-2xl border border-[#BCC8DA] bg-[#F5F7FC] px-4 text-lg text-[#1F2A44] outline-none"
                 />
               </div>
 
               <div>
-                <p className="mb-4 text-3xl font-semibold text-[#3A4860]">Color</p>
-                <div className="flex flex-wrap gap-4">
+                <p className="mb-3 text-lg font-semibold text-[#3A4860]">Color</p>
+                <div className="flex flex-wrap gap-3">
                   {CHIP_COLORS.map((color) => (
                     <button
                       key={color}
                       onClick={() => setSelectedColor(color)}
-                      className={`h-20 w-20 rounded-3xl ${
-                        selectedColor === color ? "ring-4 ring-[#A7BCE6] ring-offset-4" : ""
+                      className={`h-12 w-12 rounded-2xl ${
+                        selectedColor === color ? "ring-4 ring-[#A7BCE6] ring-offset-2" : ""
                       }`}
                       style={{ backgroundColor: color }}
                       aria-label={`Select ${color}`}
@@ -577,18 +592,18 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="mt-8 flex flex-col gap-4 md:flex-row md:justify-end">
+            <div className="mt-6 flex flex-col gap-3 md:flex-row md:justify-end">
               <button
                 onClick={closeModal}
-                className="rounded-[2rem] border border-[#CAD4E2] px-12 py-5 text-5xl font-semibold text-[#6C7A90]"
+                className="rounded-2xl border border-[#CAD4E2] px-6 py-2.5 text-lg font-semibold text-[#6C7A90]"
               >
                 Cancel
               </button>
               <button
                 onClick={saveHabit}
-                className="inline-flex min-w-96 items-center justify-center gap-4 rounded-[2rem] bg-[#1E2A44] px-12 py-5 text-5xl font-semibold text-white"
+                className="inline-flex min-w-56 items-center justify-center gap-2 rounded-2xl bg-[#1E2A44] px-7 py-2.5 text-lg font-semibold text-white"
               >
-                <Plus className="h-7 w-7" /> {editingHabitId ? "Save Changes" : "Create Habit"}
+                <Plus className="h-5 w-5" /> {editingHabitId ? "Save Changes" : "Create Habit"}
               </button>
             </div>
           </div>
