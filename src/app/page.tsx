@@ -29,10 +29,10 @@ type PageMode = "habits" | "timer";
 type TimerMode = "stopwatch" | "countdown";
 
 const CHIP_COLORS = [
-  "#57B588",
+  "#6D5D6E",
   "#4E7DD9",
-  "#E5A23A",
-  "#DF5249",
+  "#4F4557",
+  "#4F4557",
   "#7D5BDE",
   "#CF5198",
   "#56A8C5",
@@ -241,7 +241,7 @@ export default function Home() {
   };
 
   return (
-    <div className="h-screen overflow-y-auto overflow-x-hidden bg-[#F3F5F9] text-[#1F2A44]">
+    <div className="h-screen overflow-y-auto overflow-x-hidden bg-[#F4EEE0] text-[#393646]">
       <div className="origin-top scale-[0.72] md:scale-[0.66]">
         <header className="bg-transparent">
           <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-4 md:px-6">
@@ -255,17 +255,17 @@ export default function Home() {
               />
               <div>
                 <p className="text-3xl leading-none font-semibold tracking-tight md:text-4xl">Habitual</p>
-                <p className="text-sm text-[#8C9AB2] md:text-base">Track. Focus. Grow.</p>
+                <p className="text-sm text-[#6D5D6E] md:text-base">Track. Focus. Grow.</p>
               </div>
             </div>
 
-            <nav className="hidden rounded-3xl border border-[#D5DDE8] bg-[#F3F5F9] p-2 md:flex">
+            <nav className="hidden rounded-3xl border border-[#6D5D6E] bg-[#F4EEE0] p-2 md:flex">
               <button
                 onClick={() => setPageMode("habits")}
                 className={`flex items-center gap-3 rounded-2xl px-5 py-2.5 text-xl font-semibold ${
                   pageMode === "habits"
-                    ? "bg-white text-[#1E2A44] shadow-sm"
-                    : "text-[#97A5BB]"
+                    ? "bg-white text-[#393646] shadow-sm"
+                    : "text-[#6D5D6E]"
                 }`}
               >
                 <Target className="h-4 w-4" /> Habits
@@ -274,8 +274,8 @@ export default function Home() {
                 onClick={() => setPageMode("timer")}
                 className={`flex items-center gap-3 rounded-2xl px-5 py-2.5 text-xl font-semibold ${
                   pageMode === "timer"
-                    ? "bg-white text-[#1E2A44] shadow-sm"
-                    : "text-[#97A5BB]"
+                    ? "bg-white text-[#393646] shadow-sm"
+                    : "text-[#6D5D6E]"
                 }`}
               >
                 <Clock3 className="h-4 w-4" /> Timer
@@ -289,35 +289,35 @@ export default function Home() {
             <section className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
               <div>
                 <h1 className="text-2xl font-semibold tracking-tight md:text-4xl">My Habits</h1>
-                <p className="mt-2 text-sm text-[#8C9AB2] md:text-2xl">
+                <p className="mt-2 text-sm text-[#6D5D6E] md:text-2xl">
                   {completedToday} of {habits.length} completed today
                 </p>
               </div>
               <button
                 onClick={openCreateModal}
-                className="inline-flex items-center justify-center gap-2.5 rounded-3xl bg-[#1E2A44] px-6 py-2.5 text-lg font-semibold text-white shadow-lg md:min-w-48 md:text-2xl"
+                className="inline-flex items-center justify-center gap-2.5 rounded-3xl bg-[#393646] px-6 py-2.5 text-lg font-semibold text-white shadow-lg md:min-w-48 md:text-2xl"
               >
                 <Plus className="h-5 w-5" /> Add Habit
               </button>
             </section>
 
-            <div className="mt-6 h-3 w-full overflow-hidden rounded-full bg-[#E6EBF2]">
-              <div className="h-full rounded-full bg-[#57B588] transition-all" style={{ width: `${progress}%` }} />
+            <div className="mt-6 h-3 w-full overflow-hidden rounded-full bg-[#6D5D6E]">
+              <div className="h-full rounded-full bg-[#6D5D6E] transition-all" style={{ width: `${progress}%` }} />
             </div>
 
             <section className="mt-6 flex flex-col gap-3 md:flex-row">
-              <div className="flex flex-1 items-center gap-3 rounded-3xl border border-[#CCD5E3] bg-white px-4 py-2.5">
-                <Search className="h-5 w-5 text-[#8FA0B8]" />
+              <div className="flex flex-1 items-center gap-3 rounded-3xl border border-[#6D5D6E] bg-white px-4 py-2.5">
+                <Search className="h-5 w-5 text-[#6D5D6E]" />
                 <input
                   value={searchText}
                   onChange={(e) => setSearchText(e.target.value)}
                   placeholder="Search habits..."
-                  className="w-full bg-transparent text-base text-[#5E6D86] outline-none placeholder:text-[#9AA8BC] md:text-2xl"
+                  className="w-full bg-transparent text-base text-[#4F4557] outline-none placeholder:text-[#6D5D6E] md:text-2xl"
                 />
               </div>
 
-              <div className="flex items-center gap-2 rounded-3xl border border-[#CCD5E3] bg-white p-2">
-                <div className="grid h-10 w-10 place-items-center text-[#8FA0B8] md:h-12 md:w-12">
+              <div className="flex items-center gap-2 rounded-3xl border border-[#6D5D6E] bg-white p-2">
+                <div className="grid h-10 w-10 place-items-center text-[#6D5D6E] md:h-12 md:w-12">
                   <Filter className="h-4 w-4" />
                 </div>
                 {(["all", "active", "completed"] as FilterMode[]).map((mode) => (
@@ -326,8 +326,8 @@ export default function Home() {
                     onClick={() => setFilterMode(mode)}
                     className={`rounded-2xl px-4 py-2 text-sm font-semibold capitalize md:text-xl ${
                       filterMode === mode
-                        ? "bg-[#F4F6FA] text-[#1F2A44] shadow-sm"
-                        : "text-[#8FA0B8]"
+                        ? "bg-[#F4EEE0] text-[#393646] shadow-sm"
+                        : "text-[#6D5D6E]"
                     }`}
                   >
                     {mode}
@@ -338,7 +338,7 @@ export default function Home() {
 
             <section className="mt-5 max-h-[52vh] space-y-3 overflow-y-auto pr-1">
               {visibleHabits.length === 0 ? (
-                <div className="rounded-3xl border border-[#D8DFEA] bg-white p-10 text-center text-xl text-[#8FA0B8]">
+                <div className="rounded-3xl border border-[#6D5D6E] bg-white p-10 text-center text-xl text-[#6D5D6E]">
                   No habits found. Create one to get started.
                 </div>
               ) : (
@@ -350,7 +350,7 @@ export default function Home() {
                     <article
                       key={habit.id}
                       className={`rounded-3xl border-[3px] bg-white p-4 shadow-sm transition-all md:p-5 ${
-                        done ? "border-[#DF5249]/90 bg-[#FFF8F8]" : "border-[#D2DAE8]"
+                        done ? "border-[#4F4557]/90 bg-[#FFF8F8]" : "border-[#D2DAE8]"
                       }`}
                     >
                       <div className="flex items-start justify-between gap-4">
@@ -359,8 +359,8 @@ export default function Home() {
                             onClick={() => toggleLog(habit.id, format(new Date(), "yyyy-MM-dd"))}
                             className={`grid h-10 w-10 place-items-center rounded-full border-[3px] md:h-12 md:w-12 ${
                               done
-                                ? "border-[#DF5249] bg-[#DF5249] text-white"
-                                : "border-[#B9C5D7] text-transparent"
+                                ? "border-[#4F4557] bg-[#4F4557] text-white"
+                                : "border-[#6D5D6E] text-transparent"
                             }`}
                             aria-label="Toggle completed"
                           >
@@ -374,7 +374,7 @@ export default function Home() {
                               ) : null}
                               <h3
                                 className={`text-xl font-semibold md:text-3xl ${
-                                  done ? "text-[#CF514A] line-through" : "text-[#1F2A44]"
+                                  done ? "text-[#4F4557] line-through" : "text-[#393646]"
                                 }`}
                               >
                                 {habit.name}
@@ -382,16 +382,16 @@ export default function Home() {
                             </div>
 
                             {habit.description ? (
-                              <p className="mt-1.5 text-xs text-[#73839B] md:text-lg">{habit.description}</p>
+                              <p className="mt-1.5 text-xs text-[#6D5D6E] md:text-lg">{habit.description}</p>
                             ) : null}
 
-                            <div className="mt-3 inline-flex items-center gap-2 rounded-2xl bg-[#EEF2F7] px-3 py-1.5 text-xs font-semibold text-[#8D9BB1] md:text-base">
+                            <div className="mt-3 inline-flex items-center gap-2 rounded-2xl bg-[#F4EEE0] px-3 py-1.5 text-xs font-semibold text-[#6D5D6E] md:text-base">
                               <Calendar className="h-4 w-4" /> {reminderText}
                             </div>
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-3 text-[#98A6BB]">
+                        <div className="flex items-center gap-3 text-[#6D5D6E]">
                           <button onClick={() => openEditModal(habit)} className="p-1" aria-label="Edit habit">
                             <Pencil className="h-5 w-5" />
                           </button>
@@ -408,14 +408,14 @@ export default function Home() {
           </main>
         ) : (
           <main className="mx-auto w-full max-w-5xl px-4 py-8 md:px-6 md:py-10">
-            <section className="rounded-[2rem] border border-[#D3DBE8] bg-white p-5 shadow-sm md:p-7">
+            <section className="rounded-[2rem] border border-[#6D5D6E] bg-white p-5 shadow-sm md:p-7">
               <div className="flex gap-2">
                 <button
                   onClick={() => setTimerMode("stopwatch")}
                   className={`inline-flex items-center gap-2 rounded-2xl px-5 py-2.5 text-lg font-semibold ${
                     timerMode === "stopwatch"
-                      ? "bg-[#1E2A44] text-white shadow-md"
-                      : "bg-[#EEF2F7] text-[#64748F]"
+                      ? "bg-[#393646] text-white shadow-md"
+                      : "bg-[#F4EEE0] text-[#6D5D6E]"
                   }`}
                 >
                   <Timer className="h-4 w-4" /> Stopwatch
@@ -424,8 +424,8 @@ export default function Home() {
                   onClick={() => setTimerMode("countdown")}
                   className={`inline-flex items-center gap-2 rounded-2xl px-5 py-2.5 text-lg font-semibold ${
                     timerMode === "countdown"
-                      ? "bg-[#1E2A44] text-white shadow-md"
-                      : "bg-[#EEF2F7] text-[#64748F]"
+                      ? "bg-[#393646] text-white shadow-md"
+                      : "bg-[#F4EEE0] text-[#6D5D6E]"
                   }`}
                 >
                   <TimerReset className="h-4 w-4" /> Countdown
@@ -434,7 +434,7 @@ export default function Home() {
 
               {timerMode === "countdown" ? (
                 <div className="mt-4 flex items-center gap-4 text-base">
-                  <label className="text-[#64748F] font-medium">Min</label>
+                  <label className="text-[#6D5D6E] font-medium">Min</label>
                   <input
                     type="number"
                     min={0}
@@ -442,9 +442,9 @@ export default function Home() {
                     value={countdownMinutesInput}
                     onChange={(e) => setCountdownMinutesInput(Number(e.target.value))}
                     disabled={isCountdownRunning}
-                    className="w-20 rounded-2xl border border-[#CAD4E2] bg-[#F7F9FC] px-3 py-2 text-center text-xl font-semibold text-[#33435B] outline-none disabled:opacity-60"
+                    className="w-20 rounded-2xl border border-[#6D5D6E] bg-[#F7F9FC] px-3 py-2 text-center text-xl font-semibold text-[#4F4557] outline-none disabled:opacity-60"
                   />
-                  <label className="text-[#64748F] font-medium">Sec</label>
+                  <label className="text-[#6D5D6E] font-medium">Sec</label>
                   <input
                     type="number"
                     min={0}
@@ -452,12 +452,12 @@ export default function Home() {
                     value={countdownSecondsInput}
                     onChange={(e) => setCountdownSecondsInput(Number(e.target.value))}
                     disabled={isCountdownRunning}
-                    className="w-20 rounded-2xl border border-[#CAD4E2] bg-[#F7F9FC] px-3 py-2 text-center text-xl font-semibold text-[#33435B] outline-none disabled:opacity-60"
+                    className="w-20 rounded-2xl border border-[#6D5D6E] bg-[#F7F9FC] px-3 py-2 text-center text-xl font-semibold text-[#4F4557] outline-none disabled:opacity-60"
                   />
                   <button
                     onClick={applyCountdownInputs}
                     disabled={isCountdownRunning}
-                    className="rounded-2xl border border-[#CAD4E2] px-5 py-2 text-xl font-semibold text-[#5D6B84] disabled:opacity-60"
+                    className="rounded-2xl border border-[#6D5D6E] px-5 py-2 text-xl font-semibold text-[#5D6B84] disabled:opacity-60"
                   >
                     Apply
                   </button>
@@ -472,7 +472,7 @@ export default function Home() {
                 <button
                   onClick={handleTimerStartPause}
                   className={`inline-flex min-w-40 items-center justify-center gap-2 rounded-2xl px-5 py-3 text-xl font-semibold text-white shadow-md ${
-                    isTimerRunning ? "bg-[#E5A23A]" : "bg-[#57B588]"
+                    isTimerRunning ? "bg-[#4F4557]" : "bg-[#6D5D6E]"
                   }`}
                 >
                   {isTimerRunning ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
@@ -480,7 +480,7 @@ export default function Home() {
                 </button>
                 <button
                   onClick={handleTimerReset}
-                  className="inline-flex min-w-32 items-center justify-center gap-2 rounded-2xl border border-[#CAD4E2] px-5 py-3 text-xl font-semibold text-[#4F5D75]"
+                  className="inline-flex min-w-32 items-center justify-center gap-2 rounded-2xl border border-[#6D5D6E] px-5 py-3 text-xl font-semibold text-[#4F4557]"
                 >
                   <RotateCcw className="h-5 w-5" /> Reset
                 </button>
@@ -496,34 +496,34 @@ export default function Home() {
           onClick={closeModal}
         >
           <div
-            className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-[1.8rem] border border-[#DCE3EF] bg-white p-5 shadow-2xl md:p-6"
+            className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-[1.8rem] border border-[#6D5D6E] bg-white p-5 shadow-2xl md:p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-2xl font-semibold text-[#33435B] md:text-3xl">
+              <h2 className="text-2xl font-semibold text-[#4F4557] md:text-3xl">
                 {editingHabitId ? "Edit Habit" : "Create New Habit"}
               </h2>
               <button
                 onClick={closeModal}
                 aria-label="Close modal"
-                className="rounded-xl p-2 text-[#64748F] hover:bg-[#EEF2F7]"
+                className="rounded-xl p-2 text-[#6D5D6E] hover:bg-[#F4EEE0]"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="mb-2 block text-lg font-semibold text-[#3A4860]">Habit Name</label>
+                <label className="mb-2 block text-lg font-semibold text-[#4F4557]">Habit Name</label>
                 <input
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Morning meditation"
-                  className="h-14 w-full rounded-2xl border border-[#BCC8DA] bg-[#F5F7FC] px-4 text-lg text-[#35455E] outline-none placeholder:text-[#8D97AA]"
+                  className="h-14 w-full rounded-2xl border border-[#6D5D6E] bg-[#F4EEE0] px-4 text-lg text-[#4F4557] outline-none placeholder:text-[#6D5D6E]"
                 />
               </div>
 
               <div>
-                <label className="mb-2 block text-lg font-semibold text-[#3A4860]">
+                <label className="mb-2 block text-lg font-semibold text-[#4F4557]">
                   Emoji (optional)
                 </label>
                 <input
@@ -531,18 +531,18 @@ export default function Home() {
                   onChange={(e) => setEmoji(e.target.value)}
                   placeholder="e.g. 🧘"
                   maxLength={2}
-                  className="h-14 w-full rounded-2xl border border-[#BCC8DA] bg-[#F5F7FC] px-4 text-lg text-[#35455E] outline-none placeholder:text-[#8D97AA]"
+                  className="h-14 w-full rounded-2xl border border-[#6D5D6E] bg-[#F4EEE0] px-4 text-lg text-[#4F4557] outline-none placeholder:text-[#6D5D6E]"
                 />
                 <div className="mt-3">
                   <button
                     type="button"
                     onClick={() => setIsEmojiPickerOpen((prev) => !prev)}
-                    className="rounded-xl border border-[#CAD4E2] bg-white px-4 py-2 text-sm font-semibold text-[#4B5A73]"
+                    className="rounded-xl border border-[#6D5D6E] bg-white px-4 py-2 text-sm font-semibold text-[#4F4557]"
                   >
                     {isEmojiPickerOpen ? "Close Emoji List" : "Open Emoji Dropdown"}
                   </button>
                   {isEmojiPickerOpen ? (
-                    <div className="mt-3 overflow-hidden rounded-3xl border border-[#CAD4E2] bg-white p-2">
+                    <div className="mt-3 overflow-hidden rounded-3xl border border-[#6D5D6E] bg-white p-2">
                       <EmojiPicker
                         width="100%"
                         height={380}
@@ -558,35 +558,35 @@ export default function Home() {
               </div>
 
               <div>
-                <label className="mb-2 block text-lg font-semibold text-[#3A4860]">Description</label>
+                <label className="mb-2 block text-lg font-semibold text-[#4F4557]">Description</label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="What's this habit about?"
                   rows={4}
-                  className="w-full rounded-2xl border border-[#BCC8DA] bg-[#F5F7FC] px-4 py-3 text-lg text-[#35455E] outline-none placeholder:text-[#8D97AA]"
+                  className="w-full rounded-2xl border border-[#6D5D6E] bg-[#F4EEE0] px-4 py-3 text-lg text-[#4F4557] outline-none placeholder:text-[#6D5D6E]"
                 />
               </div>
 
               <div>
-                <label className="mb-2 block text-lg font-semibold text-[#3A4860]">Schedule</label>
+                <label className="mb-2 block text-lg font-semibold text-[#4F4557]">Schedule</label>
                 <input
                   type="datetime-local"
                   value={scheduleAt}
                   onChange={(e) => setScheduleAt(e.target.value)}
-                  className="h-14 w-full rounded-2xl border border-[#BCC8DA] bg-[#F5F7FC] px-4 text-lg text-[#1F2A44] outline-none"
+                  className="h-14 w-full rounded-2xl border border-[#6D5D6E] bg-[#F4EEE0] px-4 text-lg text-[#393646] outline-none"
                 />
               </div>
 
               <div>
-                <p className="mb-3 text-lg font-semibold text-[#3A4860]">Color</p>
+                <p className="mb-3 text-lg font-semibold text-[#4F4557]">Color</p>
                 <div className="flex flex-wrap gap-3">
                   {CHIP_COLORS.map((color) => (
                     <button
                       key={color}
                       onClick={() => setSelectedColor(color)}
                       className={`h-12 w-12 rounded-2xl ${
-                        selectedColor === color ? "ring-4 ring-[#A7BCE6] ring-offset-2" : ""
+                        selectedColor === color ? "ring-4 ring-[#6D5D6E] ring-offset-2" : ""
                       }`}
                       style={{ backgroundColor: color }}
                       aria-label={`Select ${color}`}
@@ -599,13 +599,13 @@ export default function Home() {
             <div className="mt-6 flex flex-col gap-3 md:flex-row md:justify-end">
               <button
                 onClick={closeModal}
-                className="rounded-2xl border border-[#CAD4E2] px-6 py-2.5 text-lg font-semibold text-[#6C7A90]"
+                className="rounded-2xl border border-[#6D5D6E] px-6 py-2.5 text-lg font-semibold text-[#6D5D6E]"
               >
                 Cancel
               </button>
               <button
                 onClick={saveHabit}
-                className="inline-flex min-w-56 items-center justify-center gap-2 rounded-2xl bg-[#1E2A44] px-7 py-2.5 text-lg font-semibold text-white"
+                className="inline-flex min-w-56 items-center justify-center gap-2 rounded-2xl bg-[#393646] px-7 py-2.5 text-lg font-semibold text-white"
               >
                 <Plus className="h-5 w-5" /> {editingHabitId ? "Save Changes" : "Create Habit"}
               </button>
