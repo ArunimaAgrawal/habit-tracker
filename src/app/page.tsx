@@ -4,6 +4,7 @@ import { useHabitStore } from "@/store/habitStore";
 import { Habit } from "@/types/habit";
 import { format } from "date-fns";
 import EmojiPicker from "emoji-picker-react";
+import Image from "next/image";
 import {
   Calendar,
   Check,
@@ -20,7 +21,6 @@ import {
   TimerReset,
   Trash2,
   X,
-  Zap,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
@@ -246,9 +246,13 @@ export default function Home() {
         <header className="bg-transparent">
           <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-4 md:px-6">
             <div className="flex items-center gap-4">
-              <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#1E2A44] text-white shadow-md">
-                <Zap className="h-6 w-6" />
-              </div>
+              <Image
+                src="/habit-logo.jpg"
+                alt="Habit Tracker Logo"
+                width={48}
+                height={48}
+                className="h-12 w-12 rounded-2xl object-cover shadow-md"
+              />
               <div>
                 <p className="text-3xl leading-none font-semibold tracking-tight md:text-4xl">Habitual</p>
                 <p className="text-sm text-[#8C9AB2] md:text-base">Track. Focus. Grow.</p>
